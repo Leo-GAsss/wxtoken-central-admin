@@ -15,6 +15,8 @@ Pure standard library. Just get and run.
 ## Usage
 
 ```shell
+$ python token_server.py
+
 $ curl http://<host>:<port>/<apikey>/
 {"access_token": "current access_token"}
 ```
