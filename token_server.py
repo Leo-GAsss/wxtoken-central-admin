@@ -53,7 +53,7 @@ if __name__ == "__main__":
     config.read("config.ini")
     if "apikey" not in config["Common"]:
         print("apikey generated, please fill out config.ini\n")
-        print(' ' * 4 + token_urlsafe(32) + '\n')
+        print(' ' * 4 + token_urlsafe(64) + '\n')
     else:
         get_access_token()
         with HTTPServer(("127.0.0.1", config.getint("Common", "port")), Handler) as httpd:
