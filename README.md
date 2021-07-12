@@ -24,3 +24,4 @@ $ curl http://<host>:<port>/<apikey>/
 ## Todo
 
 - [ ] Error Handling
+- [ ] Watch Dog [旺柴]
