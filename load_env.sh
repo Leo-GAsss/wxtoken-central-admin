@@ -1,0 +1,1 @@
+export $(grep -v '^#' .env | tr -d ' ' | xargs)

@@ -1,0 +1,15 @@
+[Unit]
+Description=Wx Token Central Admin
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5
+DynamicUser=yes
+WorkingDirectory=/path/to/wxtoken-central-admin
+ExecStart=/usr/bin/python /path/to/wxtoken-central-admin/token_server.py
+EnvironmentFile=/path/to/wxtoken-central-admin/.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,7 +1,7 @@
 import datetime
 import json
+import os
 import sys
-from configparser import ConfigParser
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from secrets import token_urlsafe
@@ -9,15 +9,13 @@ from threading import Lock, Timer
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
-config = ConfigParser()
-
 token = ""
 token_lock = Lock()
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path.lstrip('/').rstrip('/') == config["Common"]["apikey"]:
+        if self.path.lstrip('/').rstrip('/') == os.environ["apikey"]:
             self.send_response(HTTPStatus.OK)
             self.send_header("Content-type", "application/json")
             self.end_headers()
@@ -33,8 +31,8 @@ class Handler(BaseHTTPRequestHandler):
 def get_access_token():
     global token
 
-    param = config["Parameter"]
-    url = config["Common"]["url"] + urlencode({k: param[k] for k in param})
+    url = os.environ["url"] + urlencode({k: os.environ[k]
+                                        for k in os.environ["params"].split(',')})
     with urlopen(url) as req:
         resp = json.loads(req.read())
         token_lock.acquire()
@@ -50,13 +48,12 @@ def get_access_token():
 
 
 if __name__ == "__main__":
-    config.read("config.ini")
-    if "apikey" not in config["Common"]:
-        print("apikey generated, please fill out config.ini\n")
+    if "apikey" not in os.environ:
+        print("apikey generated, please fill out .env\n")
         print(' ' * 4 + token_urlsafe(64) + '\n')
     else:
         get_access_token()
-        with HTTPServer(("127.0.0.1", config.getint("Common", "port")), Handler) as httpd:
+        with HTTPServer(("127.0.0.1", int(os.environ["port"])), Handler) as httpd:
             try:
                 httpd.serve_forever()
             except KeyboardInterrupt:
